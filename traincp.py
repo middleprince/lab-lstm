@@ -42,7 +42,7 @@ class Config:
     output_size = len(label_columns)
 
     hidden_size = 128           # LSTM的隐藏层大小，也是输出大小
-    lstm_layers = 2             # LSTM的堆叠层数
+    lstm_layers = 3             # LSTM的堆叠层数
     dropout_rate = 0.2          # dropout概率
     time_step = 14              # 这个参数很重要，是设置用前多少天的数据来预测，也是LSTM的time step数
 
@@ -62,7 +62,7 @@ class Config:
     patience = 50                # 训练多少epoch，验证集没提升就停掉
     random_seed = 42            # 随机种子，保证可复现
 
-    do_continue_train = False    # 每次训练把上一次的final_state作为下一次的init_state，仅用于RNN类型模型，目前仅支持pytorch
+    do_continue_train = True    # 每次训练把上一次的final_state作为下一次的init_state，仅用于RNN类型模型，目前仅支持pytorch
     continue_flag = ""           # 但实际效果不佳，可能原因：仅能以 batch_size = 1 训练
     if do_continue_train:
         shuffle_train_data = False
@@ -86,6 +86,7 @@ class Config:
     do_log_save = True                  # 是否将config和训练过程记录到log
     do_figure_save = False
     do_train_visualized = False          # 训练loss可视化，pytorch用visdom，tf用tensorboardX，实际上可以通用, keras没有
+    plotline = False                     # 使用线条还是点来刻画结果
     if not os.path.exists(model_save_path):
         os.makedirs(model_save_path)    # makedirs 递归创建目录
     if not os.path.exists(figure_save_path):
@@ -209,7 +210,7 @@ def draw(config: Config, origin_data: Data, logger, predict_norm_data: np.ndarra
     # loss_norm = np.mean((label_norm_data[config.predict_day:] - predict_norm_data[:-config.predict_day]) ** 2, axis=0)
     # logger.info("The mean squared error of stock {} is ".format(label_name) + str(loss_norm))
 
-    loss = np.mean((label_data[config.predict_day:] - predict_data[:-config.predict_day] ) ** 2, axis=0)
+    loss = np.mean((label_data[:config.predict_day] - predict_data[:config.predict_day] ) ** 2, axis=0) #计算test dataset中从头长predict_day长
     loss_norm = loss/(origin_data.std[config.label_in_feature_index] ** 2)
     logger.info("The mean squared error of stock {} is ".format(label_name) + str(loss_norm))
 
@@ -230,34 +231,50 @@ def draw(config: Config, origin_data: Data, logger, predict_norm_data: np.ndarra
     #            plt.savefig(config.figure_save_path+"{}predict_{}_with_{}.png".format(config.continue_flag, label_name[i], config.used_frame))
 
     #    plt.show()
-   
-    #print(label_data[config.predict_day:])
-    print(predict_data)
-    print("the length of predicted data")
-    print(predict_data[:-config.predict_day])
+  
 
-    print("the predicted x index is:")
-    print(predict_X)
-
-    ## 画出点
-    label_plot = np.empty(shape=label_data.shape)
-    predicted_plot= np.empty(shape=predict_data.shape)
-    for i in range(label_column_num):
-        print(type(label_data))
-        label_plot[:-config.predict_day, i]= label_data[:-config.predict_day, i]
-        predicted_plot[:-config.predict_day, i]= predict_data[:-config.predict_day, i]
-
-    plt.figure("time and velocity")
-    ax = plt.gca()
-    ax.set_xlabel('velocity') # x axis is velocity
-    ax.set_ylabel('time')
+    
+    plt.figure("veloctiy and time testing")
     plt.title("Predict velocity-time  with {}".format(config.used_frame))
-    ax.scatter(predicted_plot[:, 1], predicted_plot[:, 0], label = "predicted") 
-    ax.scatter(label_plot[:, 1], label_plot[:, 0], label = "label") 
-    logger.info("The predicted velocity-time {} for the next {} t-step(s) is: ".format(label_name[i], config.predict_day) +
-            str(np.squeeze(predict_data[-config.predict_day:, i])))
-    logger.info("The labled velocity-time {} for the next {} t-step(s) is: ".format(label_name[i], config.predict_day) + 
-            str(np.squeeze(label_data[-config.predict_day:, i])))
+    plt.xlabel("velocity")
+    plt.ylabel("time")
+
+    ## 画出线 
+    if config.plotline: 
+        plt.plot(label_data[:config.predict_day, 1], label_data[:config.predict_day, 0], label='label')
+        plt.plot(predict_data[:config.predict_day, 1], predict_data[:config.predict_day, 0], label='predict')
+        plt.legend(loc='upper right')
+        for i in range(label_column_num):
+            logger.info("The predicted  {} for the next {} t-step(s) is: ".format(label_name[i], config.predict_day) +
+                  str(np.squeeze(predict_data[-config.predict_day:, i])))
+            logger.info("The label  {} for the next {} t-step(s) is: ".format(label_name[i], config.predict_day) +
+                  str(np.squeeze(label_data[-config.predict_day:, i])))
+        if config.do_figure_save:
+            plt.savefig(config.figure_save_path+"{}predict_{}_with_{}.png".format(config.continue_flag, label_name[i], config.used_frame))
+    
+    ## 画出点
+    else: 
+        label_plot = np.empty(shape=label_data.shape)
+        predicted_plot= np.empty(shape=predict_data.shape)
+
+        label_plot[:config.predict_day]= label_data[:config.predict_day]
+        predicted_plot[:config.predict_day]= predict_data[:config.predict_day]
+        
+        #print(label_plot[:config.predict_day])
+
+        #ax = plt.gca()
+        #ax.set_xlabel('velocity') # x axis is velocity
+        #ax.set_ylabel('time')
+        #ax.scatter(predicted_plot[:config.predict_day, 1], predicted_plot[:config.predict_day, 0], label = "predicted") 
+        #ax.scatter(label_plot[:config.predict_day, 1], label_plot[:config.predict_day, 0], label = "label") 
+        plt.plot(predicted_plot[:config.predict_day, 1], predicted_plot[:config.predict_day, 0], "^", label = "predicted") 
+        plt.plot(label_plot[:config.predict_day, 1], label_plot[:config.predict_day, 0], 'v', label = "label")        
+        plt.legend(loc='upper right')
+        for i in range(label_column_num):
+            logger.info("The predicted velocity-time {} for the next {} t-step(s) is: ".format(label_name[i], config.predict_day) +
+                    str(np.squeeze(predict_data[:config.predict_day, i])))
+            logger.info("The labled velocity-time {} for the next {} t-step(s) is: ".format(label_name[i], config.predict_day) + 
+                    str(np.squeeze(label_data[:config.predict_day, i])))
     plt.show()
 
 
