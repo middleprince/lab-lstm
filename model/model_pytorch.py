@@ -1,9 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-@author: hichenway
-@contact: lyshello123@163.com
-@time: 2020/5/9 17:00
-@license: Apache
+
 pytorch 模型
 """
 
@@ -15,7 +12,6 @@ import numpy as np
 class Net(Module):
     '''
     pytorch预测模型，包括LSTM时序预测层和Linear回归输出层
-    可以根据自己的情况增加模型结构
     '''
     def __init__(self, config):
         super(Net, self).__init__()
@@ -42,11 +38,11 @@ def train(config, logger, train_and_valid_data):
     valid_loader = DataLoader(TensorDataset(valid_X, valid_Y), batch_size=config.batch_size)
 
     device = torch.device("cuda:0" if config.use_cuda and torch.cuda.is_available() else "cpu") # CPU训练还是GPU
-    model = Net(config).to(device)      # 如果是GPU训练， .to(device) 会把模型/数据复制到GPU显存中
-    if config.add_train:                # 如果是增量训练，会先加载原模型参数
+    model = Net(config).to(device)      # GPU训练,.to(device) 会把模型/数据复制到GPU显存中
+    if config.add_train:                # 增量训练，会先加载原模型参数
         model.load_state_dict(torch.load(config.model_save_path + config.model_name))
-    optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
-    criterion = torch.nn.MSELoss()      # 这两句是定义优化器和loss
+    optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate) # 优化器
+    criterion = torch.nn.MSELoss()      # loss
 
     valid_loss_min = float("inf")
     bad_epoch = 0
@@ -65,7 +61,7 @@ def train(config, logger, train_and_valid_data):
                 hidden_train = None             # 如果非连续训练，把hidden重置即可
             else:
                 h_0, c_0 = hidden_train
-                h_0.detach_(), c_0.detach_()    # 去掉梯度信息
+                h_0.detach_(), c_0.detach_()    # 去掉梯度信息,也就是gradient clipping
                 hidden_train = (h_0, c_0)
             loss = criterion(pred_Y, _train_Y)  # 计算loss
             loss.backward()                     # 将loss反向传播
