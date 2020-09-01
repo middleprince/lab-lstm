@@ -54,14 +54,15 @@ def train(config, logger, train_and_valid_data):
         hidden_train = None
         for i, _data in enumerate(train_loader):
             _train_X, _train_Y = _data[0].to(device),_data[1].to(device)
+            #print("###INFO data loader train:", _train_X.shape)
             optimizer.zero_grad()               # 训练前要将梯度信息置 0
-            pred_Y, hidden_train = model(_train_X, hidden_train)    # 这里走的就是前向计算forward函数
+            pred_Y, hidden_train = model(_train_X, hidden_train)    # forward
 
             if not config.do_continue_train:
                 hidden_train = None             # 如果非连续训练，把hidden重置即可
             else:
                 h_0, c_0 = hidden_train
-                h_0.detach_(), c_0.detach_()    # 去掉梯度信息,也就是gradient clipping
+                h_0.detach_(), c_0.detach_()    # 去掉梯度信息,也就是gradient clipping一种简单的实现方法
                 hidden_train = (h_0, c_0)
             loss = criterion(pred_Y, _train_Y)  # 计算loss
             loss.backward()                     # 将loss反向传播
@@ -80,7 +81,7 @@ def train(config, logger, train_and_valid_data):
             _valid_X, _valid_Y = _valid_X.to(device), _valid_Y.to(device)
             pred_Y, hidden_valid = model(_valid_X, hidden_valid)
             if not config.do_continue_train: hidden_valid = None
-            loss = criterion(pred_Y, _valid_Y)  # 验证过程只有前向计算，无反向传播过程
+            loss = criterion(pred_Y, _valid_Y)  # 验证过程只有前向计算
             valid_loss_array.append(loss.item())
 
         train_loss_cur = np.mean(train_loss_array)
@@ -103,7 +104,8 @@ def train(config, logger, train_and_valid_data):
                 logger.info(" The training stops early in epoch {}".format(epoch))
                 break
 
-
+# TODO:
+# 修改推断计算的方式，不使用语言模型，改为之间使用预测输入偏移,即是output不向下一个是输入传递。
 def predict(config, test_X):
     # 获取测试数据
     test_X = torch.from_numpy(test_X).float()
@@ -124,7 +126,8 @@ def predict(config, test_X):
     for _data in test_loader:
         data_X = _data[0].to(device)
         pred_X, hidden_predict = model(data_X, hidden_predict)
-        # if not config.do_continue_train: hidden_predict = None    # 实验发现无论是否是连续训练模式，把上一个time_step的hidden传入下一个效果都更好
+        # 非连续训练将hidden state 置0 
+        if not config.do_continue_train: hidden_predict = None    
         cur_pred = torch.squeeze(pred_X, dim=0)
         result = torch.cat((result, cur_pred), dim=0)
 
