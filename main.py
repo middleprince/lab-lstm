@@ -68,6 +68,7 @@ class Config:
     train_data_path = "./data/train_lstm.csv"
     val_data_path = "./data/val_lstm.csv"
     test_data_path = "./data/test_lstm.csv"
+    prediction_file_path = "./data/test_prediction.csv"
 
     #model_save_path = "./checkpoint/" + cur_time + '_' + "/"
     model_save_path = "./checkpoint/" + "/"
@@ -320,8 +321,7 @@ def draw(config: Config, origin_data: Data, logger, predict_norm_data: np.ndarra
 
         plt.show()
 
-def save_prediction_data(config: Config, origin_data: Data, predict_norm_data: np.ndarray, save_file):
-    label_data = origin_data.data_test[:, config.label_columns]
+def save_prediction_data(config: Config, origin_data: Data, predict_norm_data: np.ndarray):
 
     # 通过保存的均值和方差还原数据
     predict_data = predict_norm_data * origin_data.std[config.label_columns] + \
@@ -335,16 +335,19 @@ def save_prediction_data(config: Config, origin_data: Data, predict_norm_data: n
    
     print("##INFO prediction shape: ", predict_data.shape, type(predict_data)) 
     print("##INFO test shape: ", test_data.shape, type(test_data)) 
-    #np.hstack((test_data[:(predict_rows-test_row) ], predict_rows))
-    result = np.concatenate((test_data[:(predict_rows-test_row)], predict_data), axis=1)
-    #np.hstack((predict_data, origin_data.data_test[:, 2:])) 
+    # TODO: prediction loss some data
+    #result = np.concatenate((test_data[:(predict_rows-test_row)], predict_data), axis=1)
+    test_data = test_data[:(predict_rows-test_row)]
+    test_data[:, 2: 4] += predict_data.astype(int)
     
-    if not os.path.exists(save_file):
-        with open(save_file, 'w+') as f:
+    
+    if not os.path.exists(config.prediction_file_path):
+        with open(config.prediction_file_path, 'w+') as f:
             pass
 
-    df = pd.DataFrame(result, dtype=int)
-    df.to_csv(save_file, index=False, sep=',') 
+    df = pd.DataFrame(test_data[:, :4], columns=['line', 'trace', 'time', 'velocity'], dtype=int)
+    df.to_csv(config.prediction_file_path, index=False, sep=',') 
+
 
 def main(config):
     logger = load_logger(config)
@@ -361,7 +364,7 @@ def main(config):
             test_X, test_Y = data_gainer.get_test_data(return_label_data=True) 
             pred_result = predict(config, test_X)       # 这里输出的是未还原的归一化预测数据
             # TODO:save prediction result into csv file
-            save_prediction_data(config, data_gainer, pred_result, './data/test_result.csv') 
+            save_prediction_data(config, data_gainer, pred_result) 
             #draw(config, data_gainer, logger, pred_result)
     except Exception:
         logger.error("Run Error", exc_info=True)
