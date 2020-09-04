@@ -40,7 +40,7 @@ def train(config, logger, train_and_valid_data):
     device = torch.device("cuda:0" if config.use_cuda and torch.cuda.is_available() else "cpu") # CPU训练还是GPU
     model = Net(config).to(device)      # GPU训练,.to(device) 会把模型/数据复制到GPU显存中
     if config.add_train:                # 增量训练，会先加载原模型参数
-        model.load_state_dict(torch.load(config.model_save_path + config.model_name))
+        model.load_state_dict(torch.load(config.model_save_path + config.model_name+'.pth'))
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate) # 优化器
     criterion = torch.nn.MSELoss()      # loss
 
@@ -49,7 +49,7 @@ def train(config, logger, train_and_valid_data):
     global_step = 0
     for epoch in range(config.epoch):
         logger.info("Epoch {}/{}".format(epoch, config.epoch))
-        model.train()                   # pytorch中，训练时要转换成训练模式
+        model.train()                   # 转换成训练模式
         train_loss_array = []
         hidden_train = None
         for i, _data in enumerate(train_loader):
@@ -97,7 +97,7 @@ def train(config, logger, train_and_valid_data):
         if valid_loss_cur < valid_loss_min:
             valid_loss_min = valid_loss_cur
             bad_epoch = 0
-            torch.save(model.state_dict(), config.model_save_path + config.model_name)  # 模型保存
+            torch.save(model.state_dict(), config.model_save_path + config.model_name+'.pth')  # 模型保存
         else:
             bad_epoch += 1
             if bad_epoch >= config.patience:    # 如果验证集指标连续patience个epoch没有提升，就停掉训练
@@ -115,7 +115,7 @@ def predict(config, test_X):
     # 加载模型
     device = torch.device("cuda:0" if config.use_cuda and torch.cuda.is_available() else "cpu")
     model = Net(config).to(device)
-    model.load_state_dict(torch.load(config.model_save_path + config.model_name))   # 加载模型参数
+    model.load_state_dict(torch.load(config.model_save_path + config.model_name+'.pth'))   # 加载模型参数
 
     # 先定义一个tensor保存预测结果
     result = torch.Tensor().to(device)
