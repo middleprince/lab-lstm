@@ -100,12 +100,12 @@ if __name__ == '__main__':
     #pre_file = './dataTest/complex_val_predicted_data.csv' 
     #pre_file = './dataTest/complex_redicted_data.csv'
     
-    label_file = './dataTest/complex/train_label.csv' 
+    label_file = './dataTest/complex_train_label.csv' 
     #label_file = './dataTest/complex_val_label.csv'
     #label_file = './dataTest/complex_test_label.csv'
     
 
-    save_file = './dataTest/train_lstm.csv'
+    save_file = './dataTest/complex_train_lstm.csv'
     #save_file = './dataTest/val_lstm.csv'
     #save_file = './dataTest/test_lstm.csv'
 
