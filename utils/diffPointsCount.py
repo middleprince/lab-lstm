@@ -50,8 +50,8 @@ def countDiffPoint(pre_file, label_file, save_file):
     #    diff_cnt.append(tmp_diff)  
     #    diff_all += tmp_diff
     
-    # FIXED: mismatching addressed by throw these points which label data lacked of 
 
+    # FIXED: mismatching addressed by throw these points that label data lacked of 
     i = 0
     try:
         while label_LT[i]:
