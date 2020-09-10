@@ -24,8 +24,12 @@ def countDiffPoint(pre_file, label_file, save_file):
             count += 1    
         LT_list.append(str(last_one_l)+'_'+str(last_one_t))
         TVs.append(count)
- 
+    
+    #TODO: sort the line, trace , time by ascending order
     df_pre = pd.read_csv(pre_file, skiprows=0, dtype=int)
+    df_pre.sort_values(by=['line', 'trace', 'time'], inplace=True)
+    df_pre.to_csv(pre_file, index=False, sep=',')
+
     df_label = pd.read_csv(label_file, skiprows=0, dtype=int)
     
     pre_LT = [] # buffer for line-trace 
@@ -104,17 +108,17 @@ def countDiffPoint(pre_file, label_file, save_file):
    
     
 if __name__ == '__main__':
-    pre_file = './dataTest/complex_train_predicted_data.csv' 
-    #pre_file = './dataTest/complex_val_predicted_data.csv' 
-    #pre_file = './dataTest/complex_test_predicted_data.csv'
+    pre_file = './dataTest/complex_prediction_train_wang.csv'
+    #pre_file = './dataTest/complex_prediction_val_wang.csv'
+    #pre_file = './dataTest/complex_prediction_test_wang.csv'
     
-    label_file = './dataTest/complex_train_label.csv' 
-    #label_file = './dataTest/complex_val_label.csv'
-    #label_file = './dataTest/complex_test_label.csv'
+    label_file = './dataTest/complex_train_label2.csv' 
+    #label_file = './dataTest/complex_val_label2.csv'
+    #label_file = './dataTest/complex_test_label2.csv'
     
-    save_file = './dataTest/complex_train_diff.csv'
-    #save_file = './dataTest/complex_val_diff.csv'
-    #save_file = './dataTest/complex_test_diff.csv'
+    save_file = './dataTest/complex_train_diff_wang.csv'
+    #save_file = './dataTest/complex_val_diff_wang.csv'
+    #save_file = './dataTest/complex_test_diff_wang.csv'
 
     #Testing code
     #df = pd.read_csv(pre_file, skiprows=0, dtype=int)
