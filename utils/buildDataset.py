@@ -41,11 +41,12 @@ def  buildDataset(pre_file, label_file, save_file):
     # buffer for delta-tv to storing
     delta_time = []
     delta_velocity = []
+
     # buffer for line and trace and time, velocity
     line_list = [ ]
     trace_list = [ ]
-    pre_time = []
-    pre_velocity = []
+    pre_time = [ ]
+    pre_velocity = [ ]
 
     # compute delta tv per line-trace
     for line_trace, tvs in tqdm(zip(label_LTDic.keys(), label_LTDic.values())):
@@ -60,27 +61,42 @@ def  buildDataset(pre_file, label_file, save_file):
         trace_tmp = int(lt_str[1])
 
         # with respect to prediction tvs
-        for i in range(len(tvs_pre)):
+        i = 0
+        j = 0
+        tvs_num = len(tvs_pre)
+        while i < tvs_num:
+        #for i in range(len(tvs_pre)):
             
             line_list.append(line_tmp)
             trace_list.append(trace_tmp)
             pre_time.append(tvs_pre[i][0])
             pre_velocity.append(tvs_pre[i][1])
 
-            # TOFIX: index out of range exception 
-            #if not tvs[i]:
-            #    delta_time.append(tvs[-1][0] - tvs_pre[i][0])    
-            #    delta_velocity.append(tvs[-1][1] - tvs_pre[i][0])    
-            #    continue
+            # TODO: there is no predicaton when time less than 400 in complicated distriction.
+            # the data set should remove these data in labels
+            try:
+                while tvs[j][0] < 400:
+                    j += 1
+                    #print("INFO the label less than 400 index is {}:".format(j))
+            except IndexError as error:
+                pass 
+                #print(error)
+                #print("INFO line trace is {}".format(lt_str))
+                #print("INFO the label index is {}:".format(j))
+                #print("INFO the prediction index is {}:".format(i))
+                #exit(-1)
+            
             # FIXED: handling index exception
             try:
-                delta_t = tvs[i][0] - tvs_pre[i][0]
-                delta_v = tvs[i][1] - tvs_pre[i][1]
+                delta_t = tvs[j][0] - tvs_pre[i][0]
+                delta_v = tvs[j][1] - tvs_pre[i][1]
                 delta_time.append(delta_t) 
                 delta_velocity.append(delta_v)
             except IndexError as error:
                 delta_time.append(tvs[-1][0] - tvs_pre[i][0])    
                 delta_velocity.append(tvs[-1][1] - tvs_pre[i][0])    
+            i += 1
+            j += 1
 
 
 
@@ -96,18 +112,18 @@ if __name__ == '__main__':
     #        print(value[i][0])
 
     
-    pre_file = './dataTest/complex_train_predicted_data.csv' 
-    #pre_file = './dataTest/complex_val_predicted_data.csv' 
-    #pre_file = './dataTest/complex_redicted_data.csv'
+    #pre_file = './dataTest/complex_train_withFCOS.csv' 
+    #pre_file = './dataTest/complex_val_withFCOS.csv' 
+    pre_file = './dataTest/complex_test_withFCOS.csv'
     
-    label_file = './dataTest/complex_train_label.csv' 
-    #label_file = './dataTest/complex_val_label.csv'
-    #label_file = './dataTest/complex_test_label.csv'
+    #label_file = './dataTest/complex_train_label2.csv' 
+    #label_file = './dataTest/complex_val_label2.csv'
+    label_file = './dataTest/complex_test_label2.csv'
     
 
-    save_file = './dataTest/complex_train_lstm.csv'
-    #save_file = './dataTest/val_lstm.csv'
-    #save_file = './dataTest/test_lstm.csv'
+    #save_file = './dataTest/complex_train_lstm_fcos.csv'
+    #save_file = './dataTest/complex_val_lstm_fcos.csv'
+    save_file = './dataTest/complex_test_lstm_fcos.csv'
 
    
     if not os.path.exists(save_file):

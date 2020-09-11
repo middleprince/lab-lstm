@@ -108,17 +108,17 @@ def countDiffPoint(pre_file, label_file, save_file):
    
     
 if __name__ == '__main__':
-    pre_file = './dataTest/complex_prediction_train_wang.csv'
-    #pre_file = './dataTest/complex_prediction_val_wang.csv'
-    #pre_file = './dataTest/complex_prediction_test_wang.csv'
+    #pre_file = './dataTest/complex_train_withFCOS.csv'
+    #pre_file = './dataTest/complex_val_withFCOS.csv'
+    pre_file = './dataTest/complex_test_withFCOS.csv'
     
-    label_file = './dataTest/complex_train_label2.csv' 
+    #label_file = './dataTest/complex_train_label2.csv' 
     #label_file = './dataTest/complex_val_label2.csv'
-    #label_file = './dataTest/complex_test_label2.csv'
+    label_file = './dataTest/complex_test_label2.csv'
     
-    save_file = './dataTest/complex_train_diff_wang.csv'
-    #save_file = './dataTest/complex_val_diff_wang.csv'
-    #save_file = './dataTest/complex_test_diff_wang.csv'
+    #save_file = './dataTest/complex_train_diff_wang_fcos.csv'
+    #save_file = './dataTest/complex_val_diff_wang_fcos.csv'
+    save_file = './dataTest/complex_test_diff_wang_fcos.csv'
 
     #Testing code
     #df = pd.read_csv(pre_file, skiprows=0, dtype=int)

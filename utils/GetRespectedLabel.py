@@ -43,15 +43,15 @@ def saveToCsv(csv_file):
 
 if __name__ == '__main__':
 
-    file_name = '/Users/middle_prince/Desktop/tempt/Lab/Projects/Velocity-Time/data-and-more/training-dataset/datasets/complex-data/coco/train'
-    #file_name = '/Users/middle_prince/Desktop/tempt/Lab/Projects/Velocity-Time/data-and-more/training-dataset/datasets/complex-data/coco/val'
-    #file_name = '/Users/middle_prince/Desktop/tempt/Lab/Projects/Velocity-Time/data-and-more/training-dataset/datasets/complex-data/coco/test'
+    #file_name = '/Users/middle_prince/Desktop/tempt/Lab/Projects/Velocity-Time/data-and-more/training-dataset/datasets/coco-new-complex/train'
+    #file_name = '/Users/middle_prince/Desktop/tempt/Lab/Projects/Velocity-Time/data-and-more/training-dataset/datasets/coco-new-complex/val'
+    file_name = '/Users/middle_prince/Desktop/tempt/Lab/Projects/Velocity-Time/data-and-more/training-dataset/datasets/coco-new-complex/test'
     
-    lable_path = '/Users/middle_prince/Desktop/tempt/Lab/Projects/Velocity-Time/data-and-more/training-dataset/datasets/complex-data/label.txt' 
+    lable_path = './dataTest/complex-label2.txt'
     
-    csv_file = './dataTest/complex_train_label.csv'
-    #csv_file = './dataTest/complex_val_label.csv'
-    #csv_file = './dataTest/complex_test_label.csv'
+    #csv_file = './dataTest/complex_train_label2.csv'
+    #csv_file = './dataTest/complex_val_label2.csv'
+    csv_file = './dataTest/complex_test_label2.csv'
     
     if not os.path.exists(csv_file):
         with open(csv_file, 'w+') as f:
