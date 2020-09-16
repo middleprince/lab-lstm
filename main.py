@@ -18,16 +18,16 @@ class Config:
     # TOFIX: 當前的情況feature與label是不存在重疊的
     #label_in_feature_index = (lambda x,y: [x.index(i) for i in y])(feature_columns, label_columns)  # feature 與 label的數據存在重疊的情況
 
-    predict_length = 20             # 需要預測的序列數量
+    predict_length = 15             # 需要預測的序列數量
 
     # 网络参数
     input_size = len(feature_columns)
     output_size = len(label_columns)
 
     hidden_size = 128           # LSTM的隐藏层大小
-    lstm_layers = 2             # LSTM的堆叠层数
+    lstm_layers = 3             # LSTM的堆叠层数
     dropout_rate = 0.5          # dropout概率
-    time_step = 26              # LSTM的time step 序列长度,平均的GT中有26個點
+    time_step = 15              # LSTM的time step 序列长度,平均的GT中有26個點
 
     
 
@@ -49,7 +49,7 @@ class Config:
     continue_flag = ""           #TODO:解决连续训练下无法大batch训练的问题 
     if do_continue_train:
         shuffle_train_data = False
-        batch_size = 1 $ TOFIX:
+        batch_size = 1 # TOFIX:
         continue_flag = "continue_"
 
     # Debug Mode
@@ -62,10 +62,10 @@ class Config:
     ## 路径参数
      
     cur_time = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime())
-    train_data_path = "./data/train_lstm.csv"
-    val_data_path = "./data/val_lstm.csv"
-    test_data_path = "./data/test_lstm.csv"
-    prediction_file_path = "./data/test_prediction.csv"
+    train_data_path = "./data/complex_train_lstm_fcos.csv"
+    val_data_path = "./data/complex_val_lstm_fcos.csv"
+    test_data_path = "./data/complex_test_lstm_fcos.csv"
+    prediction_file_path = "./data/complex_test_prediction.csv"
 
     #model_save_path = "./checkpoint/" + cur_time + '_' + "/"
     model_save_path = "./checkpoint" + "/"
@@ -306,9 +306,11 @@ if __name__=="__main__":
     parser.add_argument("-t", "--do_train", default=True, type=bool, help="whether to train")
     parser.add_argument("-p", "--do_predict", default=True, type=bool, help="whether to train")
     parser.add_argument("-b", "--batch_size", default=32, type=int, help="batch size")
-    parser.add_argument("-e", "--epoch", default=5000, type=int, help="epochs num")
-    parser.add_argument("-s", "--patience", default=5000, type=int, help="patience epoch num")
+    parser.add_argument("-e", "--epoch", default=2000, type=int, help="epochs num")
+    parser.add_argument("-s", "--patience", default=1800, type=int, help="patience epoch num")
     parser.add_argument("-l", "--learning_rate", default=1e-4, type=float, help="learning rate")
+    parser.add_argument("-c", "--do_continue_train", default=False, type=bool, help="continues training mode")
+    
     args = parser.parse_args()
 
     con = Config()
