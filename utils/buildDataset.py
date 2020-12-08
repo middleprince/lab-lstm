@@ -116,20 +116,20 @@ if __name__ == '__main__':
     #pre_file = './dataTest/complex_val_withFCOS.csv' 
     #pre_file = './dataTest/complex_test_withFCOS.csv'
     #pre_file = './dataTest/data_train_hade_FCOS.csv'
-    pre_file = './dataTest/data_val_hade_FCOS.csv'
+    pre_file = './dataTest/data_test_hade_FCOS.csv'
     
     #label_file = './dataTest/complex_train_label2.csv' 
     #label_file = './dataTest/complex_val_label2.csv'
     #label_file = './dataTest/complex_test_label2.csv'
     #label_file = './dataTest/data_train_hade_label.csv'
-    label_file = './dataTest/data_val_hade_label.csv'
+    label_file = './dataTest/data_test_hade_label.csv'
     
 
     #save_file = './dataTest/complex_train_lstm_fcos.csv'
     #save_file = './dataTest/complex_val_lstm_fcos.csv'
     #save_file = './dataTest/complex_test_lstm_fcos.csv'
     #save_file = './dataTest/data_train_lstm_hade.csv'
-    save_file = './dataTest/data_val_lstm_hade.csv'
+    save_file = './dataTest/data_test_lstm_hade.csv'
 
    
     if not os.path.exists(save_file):
