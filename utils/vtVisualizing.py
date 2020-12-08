@@ -88,10 +88,14 @@ def vis_dir(label_file ,img_path, desPath, clr_config):
 
     for file in tqdm(img_list):
         #print(file)
+        # the line and cmp format can be different with different dataset, it should be modified respectively.
         if file.endswith('.png'):
             str = file.split('_')
-            linenum = int(str[5])
-            cmpnum = int(str[6][:-4])
+            #linenum = int(str[5]) # for dq8 name format is: v33_velocity_AI_dq8_energy_250_2050.png
+            #cmpnum = int(str[6][:-4]) # for dq8
+
+            linenum = int(str[4]) # for hade, which name format is :v33_velocity_hade_energy_2280_2080.png
+            cmpnum = int(str[5][:-4])
             data = getSpecCMPData(linenum, cmpnum, label_file)
             img_file = os.path.join(img_path, file)
             if len(data) == 0:
@@ -103,25 +107,51 @@ def vis_dir(label_file ,img_path, desPath, clr_config):
 
 
 if __name__=="__main__":
+    # feat: may hade image and vt shape
     min_v=1300
     min_t=0
     max_v=5500
     max_t=7000
     
-    # line and color configuration, BGR version for opencv
-    # GT labels
-    color_config = {'line_color':(0, 0, 255), 'line_thick':1, 'line_type':4 , 'pt_color':(255, 0, 0), 'pt_thick':-1}
-    label_file_gt = './dataTest/label.txt'
-    save_path = './dataTest/pred_visual'
-    img_path = './dataTest/test-complex'
+    # dq8 data rage
+    #min_v=1200
+    #min_t=0
+    #max_v=7000
+    #max_t=8000
     
-    # prediction  
-    color_config_pred = {'line_color':(0, 255, 0), 'line_thick':1, 'line_type':4 , 'pt_color':(128, 23, 123), 'pt_thick':-1}
-    label_file_pred = './dataTest/predicton_test_complex' 
+    # line and color configuration, BGR version for opencv
 
+    # GT config ,color: dark brown
+    color_config_gt = {'line_color':(79, 79, 79), 'line_thick':2, 'line_type':4 , 'pt_color':(79, 79, 79), 'pt_thick':3}
+    # fcos prediction config : bright green  
+    color_config_fcos = {'line_color':(0, 255, 127), 'line_thick':2, 'line_type':4 , 'pt_color':(0, 255, 127), 'pt_thick':3}
+    # lstm prediction config, color Turquoise  
+    #color_config_lstm = {'line_color':(238, 229, 142), 'line_thick':2, 'line_type':4 , 'pt_color':(238, 229, 142), 'pt_thick':3}
+    # orange
+    color_config_lstm = {'line_color':(0, 165, 255), 'line_thick':2, 'line_type':4 , 'pt_color':(0, 165, 255), 'pt_thick':3}
+    
+    # path where these results visualized saved
+    save_path = './dataTest/pred_visual'
+    #img_path = './dataTest/test-complex'
+    img_path = './dataTest/test-real' # image path for hade
+    #save_path_fcos = './dataTest/fcos_lstm_dq8_visual'
+    save_path_fcos = './dataTest/fcos_hade_visual'
 
-    vis_dir(label_file_gt, img_path, save_path, color_config)
-    vis_dir(label_file_pred, save_path, save_path, color_config_pred)
-
+    # v-t data file path 
+    # label file for dq8AI
+    #label_file_gt = './dataTest/complex_test_label2.csv'
+    #label_file_fcos = './dataTest/complex_test_withFCOS.csv' 
+    #label_file_lstm = '../data/complex_test_prediction.csv' 
+    #label_file_lstm = './dataTest/complex_test_predicted_data.csv'
+    #label files for hade
+    label_file_gt = './dataTest/data_test_hade_label.csv'
+    label_file_fcos = './dataTest/data_test_hade_FCOS.csv' 
+    #label_file_lstm = '../data/complex_test_prediction.csv' 
+    
+    # 
+    vis_dir(label_file_gt, img_path, save_path_fcos, color_config_gt)
+    vis_dir(label_file_fcos, save_path_fcos, save_path_fcos, color_config_fcos)
+    #vis_dir(label_file_lstm, save_path_fcos, save_path_fcos, color_config_lstm)
+    
 
 

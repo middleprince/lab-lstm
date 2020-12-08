@@ -18,7 +18,6 @@ def parseStr(str):
 # Read txt file and converte into string list which one string per line and space removed
 def getdata2list(datapath):
     data = []
-    # data = '/Users/hongqiangwang/Desktop/data.txt'
     f = open(datapath, "r")  # 设置文件对象
     line = f.readline()
     line = line[:-1]
@@ -56,7 +55,7 @@ def getSpecCMPData(linenum,cmp_num,datapath):
     f.close()  # 关闭文件
     return data
 
-data=getSpecCMPData(970, 1650,'./dataTest/label.txt')
+data=getSpecCMPData(220, 1000,'../data/complex_test_prediction.csv')
 
-print(len(data) == 0)
+print(data)
 #tmp = data[0]
