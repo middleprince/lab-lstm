@@ -62,10 +62,10 @@ class Config:
     ## 路径参数
      
     cur_time = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime())
-    train_data_path = "./data/complex_train_lstm_fcos.csv"
-    val_data_path = "./data/complex_val_lstm_fcos.csv"
-    test_data_path = "./data/complex_test_lstm_fcos.csv"
-    prediction_file_path = "./data/complex_test_prediction.csv"
+    train_data_path = "./data/data_train_lstm_hade.csv"
+    val_data_path = "./data/data_val_lstm_hade.csv"
+    test_data_path = "./data/data_test_hade_FCOS.csv"
+    prediction_file_path = "./data/data_test_lstm_prediction.csv"
 
     #model_save_path = "./checkpoint/" + cur_time + '_' + "/"
     model_save_path = "./checkpoint" + "/"
