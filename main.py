@@ -64,7 +64,7 @@ class Config:
     cur_time = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime())
     train_data_path = "./data/data_train_lstm_hade.csv"
     val_data_path = "./data/data_val_lstm_hade.csv"
-    test_data_path = "./data/data_test_hade_FCOS.csv"
+    test_data_path = "./data/data_test_lstm_hade.csv"
     prediction_file_path = "./data/data_test_lstm_prediction.csv"
 
     #model_save_path = "./checkpoint/" + cur_time + '_' + "/"
