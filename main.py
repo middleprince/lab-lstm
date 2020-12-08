@@ -18,7 +18,7 @@ class Config:
     # TOFIX: 當前的情況feature與label是不存在重疊的
     #label_in_feature_index = (lambda x,y: [x.index(i) for i in y])(feature_columns, label_columns)  # feature 與 label的數據存在重疊的情況
 
-    predict_length = 15             # 需要預測的序列數量
+    predict_length = 26             # 需要預測的序列數量
 
     # 网络参数
     input_size = len(feature_columns)
@@ -27,7 +27,7 @@ class Config:
     hidden_size = 128           # LSTM的隐藏层大小
     lstm_layers = 3             # LSTM的堆叠层数
     dropout_rate = 0.5          # dropout概率
-    time_step = 15              # LSTM的time step 序列长度,平均的GT中有26個點
+    time_step = 26              # LSTM的time step 序列长度,平均的GT中有26個點
 
     
 
@@ -41,8 +41,8 @@ class Config:
 
     batch_size = 32
     learning_rate = 0.0001
-    epoch = 150                  # 整个训练集被训练多少遍，不考虑早停的前提下
-    patience = 200                # 训练多少epoch，验证集没提升就停掉
+    epoch = 250                  # 整个训练集被训练多少遍，不考虑早停的前提下
+    patience = 300                # 训练多少epoch，验证集没提升就停掉
     random_seed = 42            # 随机种子，保证可复现
 
     do_continue_train = False    # 每次训练把上一次的final_state作为下一次的init_state,使用道间相似性 
