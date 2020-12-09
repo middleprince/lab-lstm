@@ -25,7 +25,7 @@ class Config:
     output_size = len(label_columns)
 
     hidden_size = 128           # LSTM的隐藏层大小
-    lstm_layers = 3             # LSTM的堆叠层数
+    lstm_layers = 2             # LSTM的堆叠层数
     dropout_rate = 0.5          # dropout概率
     time_step = 26              # LSTM的time step 序列长度,平均的GT中有26個點
 
@@ -41,6 +41,7 @@ class Config:
 
     batch_size = 32
     learning_rate = 0.0001
+    lr_decresing = 6000          # 学习率衰减的epochs数量
     epoch = 250                  # 整个训练集被训练多少遍，不考虑早停的前提下
     patience = 300                # 训练多少epoch，验证集没提升就停掉
     random_seed = 42            # 随机种子，保证可复现
@@ -306,10 +307,11 @@ if __name__=="__main__":
     parser.add_argument("-t", "--do_train", default=True, type=bool, help="whether to train")
     parser.add_argument("-p", "--do_predict", default=True, type=bool, help="whether to train")
     parser.add_argument("-b", "--batch_size", default=32, type=int, help="batch size")
-    parser.add_argument("-e", "--epoch", default=2000, type=int, help="epochs num")
-    parser.add_argument("-s", "--patience", default=1800, type=int, help="patience epoch num")
-    parser.add_argument("-l", "--learning_rate", default=1e-4, type=float, help="learning rate")
+    parser.add_argument("-e", "--epoch", default=10000, type=int, help="epochs num")
+    parser.add_argument("-s", "--patience", default=10000, type=int, help="patience epoch num")
+    parser.add_argument("-l", "--learning_rate", default=5e-5, type=float, help="learning rate")
     parser.add_argument("-c", "--do_continue_train", default=False, type=bool, help="continues training mode")
+    parser.add_argument("-d", "--lr_decresing", default=7000, type=int, help="the numbe of epoch which leaning rate decresed")
     
     args = parser.parse_args()
 
