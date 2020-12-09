@@ -52,6 +52,8 @@ def train(config, logger, train_and_valid_data):
         model.train()                   # 转换成训练模式
         train_loss_array = []
         hidden_train = None
+        if epoch > config.lr_decresing:
+            optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate / 5) # 学习率衰减
         for i, _data in enumerate(train_loader):
             _train_X, _train_Y = _data[0].to(device),_data[1].to(device)
             #print("###INFO data loader train:", _train_X.shape)
